@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import { FlatList, StyleSheet, View ,Image,TouchableOpacity,Text} from 'react-native'
+import { FlatList, StyleSheet, View ,Image,TouchableOpacity,Text, TextInput} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TextInput } from 'react-native';
 import {useState} from 'react'
 
 const dummy =[
@@ -13,24 +12,44 @@ const dummy =[
   {id:3, User:"Pearl",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
   {id:4, User:"Michael" ,image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
   {id:5,User:"Nick", image:"https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?q=80&w=766&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"},
-
 ]
-
 const App = () => {
 
   const [searchUser, setsearchUser] = useState('')
 
+  const [submittedText, setsubmittedText] = useState('')
+
+  const filteredUsers = dummy.filter(item =>
+    item.User.toLowerCase().includes(submittedText.toLowerCase())
+  );
+
+  const handleSearch = ()=>{
+      setsubmittedText(searchUser);
+      setsearchUser('');
+  }
   return(
     <SafeAreaView style={styles.container}>
-       <TextInput
+
+        <TextInput
           placeholder="Search usernames..."
           style={styles.input}
           value={searchUser}
           onChangeText={(searchUser)=>setsearchUser(searchUser)}
-       />
-       <Button>Search</Button>
+
+          multiline
+          numberOfLines={3}
+        />
+
+
+        <TouchableOpacity style={styles.search}
+        onPress={handleSearch}>
+          <Text style={styles.sertxt}>
+            Search
+          </Text>
+        </TouchableOpacity>
+
       <FlatList 
-        data={dummy}
+        data={filteredUsers}
         renderItem={({item}) => (
           <View style={styles.card}>
             <Image 
@@ -58,7 +77,7 @@ const App = () => {
       columnWrapperStyle={{ gap:20 }}
       // horizontal
       />
-      <Text>Result:{searchUser}</Text>
+
     </SafeAreaView>
   )
 }
@@ -108,6 +127,7 @@ const styles = StyleSheet.create({
   },
 
   input:{
+    color:"white",
     borderColor:"#676767",
     borderWidth:1,
     borderRadius:8,
@@ -117,5 +137,22 @@ const styles = StyleSheet.create({
     padding:10,
     margin:10,
     alignSelf:"center",
+  },
+  search:{
+  backgroundColor:"blue",
+  height:40,
+  width:"100%",
+  borderRadius:5,
+  justifyContent:"center",
+  },
+  sertxt:{
+    fontSize:16,
+    fontWeight:"bold",
+    alignSelf:"center",
+    color:"white",
+    justifyContent:"center"
+  },
+  result:{
+    color:"white",
   }
 })
